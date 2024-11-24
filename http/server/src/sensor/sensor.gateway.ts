@@ -6,7 +6,7 @@ import {
 import { Server } from 'socket.io';
 import { SensorService } from './sensor.service';
 
-@WebSocketGateway()
+@WebSocketGateway({ cors: '*' })
 export class SensorGateway {
   @WebSocketServer() private server: Server;
 
@@ -17,7 +17,15 @@ export class SensorGateway {
   //   return 'Hello world!';
   // }
 
-  updateSensorSrf({ full, parking }: { full: boolean; parking: string }) {
-    this.server.emit(`sensor-srf`, { code: 1, parking, full });
+  updateSensorSrf({
+    full,
+    parking_name,
+    date,
+  }: {
+    full: boolean;
+    parking_name: string;
+    date: Date;
+  }) {
+    this.server.emit(parking_name, { code: 1, parking_name, full, date: date.toISOString() });
   }
 }

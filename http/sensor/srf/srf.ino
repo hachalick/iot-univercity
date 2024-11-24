@@ -6,16 +6,16 @@
 #define ECHO_PIN 5
 #define MAX_DISTANCE 400
 
-const char* ssid = "TP-Link_7638";
-const char* password = "38949371";
-// const char* ssid = "Galaxy S20+ 5Gb841";
-// const char* password = "asdfffgaah";
-const char* serverName = "http://192.168.1.105:8080/sensor/parking/srf";
+// const char* ssid = "TP-Link_7638";
+// const char* password = "38949371";
+const char* ssid = "Galaxy S20+ 5Gb841";
+const char* password = "asdfffgaah";
+const char* serverName = "http://192.168.69.25:8080/sensor/parking/srf";
 // const char* parking = "Fl0-A1";
 bool send_data = false;
 int source_counter = 0;
 int counter_waiting = 0;
-const int max_counter_waiting = 2;
+const int max_counter_waiting = 5;
 const int ledPinNotFull = 18;
 const int ledPinFull = 19;
 const int ledPinAlert = 21;
@@ -29,11 +29,11 @@ void send_status(bool full) {
   http.addHeader("Content-Type", "application/json");
   String jsonData = "";
   if (full == true) {
-    jsonData = "{\"full\":true,\"parking\":\"Fl0-A1\"}";
+    jsonData = "{\"full\":true,\"parking_name\":\"Fl|0-P|A2\"}";
   } else {
-    jsonData = "{\"full\":false,\"parking\":\"Fl0-A1\"}";
+    jsonData = "{\"full\":false,\"parking_name\":\"Fl|0-P|A2\"}";
   }
-  int httpResponseCode = http.POST(jsonData);
+  int httpResponseCode = http.PUT(jsonData);
   if (httpResponseCode > 0) {
     String response = http.getString();
     Serial.println(httpResponseCode);
