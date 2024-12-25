@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang=en dir=rtl>
+
+<head>
+    <meta charset=UTF-8>
+    <meta name=viewport content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel=preconnect href="https://fonts.googleapis.com">
+    <link rel=preconnect href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@100..900&display=swap" rel=stylesheet>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: "Vazirmatn", serif;
+            background: #f5ffc7;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100dvh;
+        }
+
+        h1 {
+            text-align: center;
+        }
+
+        h3 {
+            font-size: x-large;
+        }
+
+        .container {
+            background: rgb(215, 247, 69);
+            border-radius: 20px;
+            padding: 10px;
+        }
+
+        .content {
+            display: flex;
+            font-size: x-large;
+        }
+
+        span {
+            margin-right: 5px;
+        }
+
+        canvas {
+            width: 500px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class=container>
+        <h1> پروژه گروه 5</h1>
+        <div class=content>
+            <h3> میزان روشنایی هوا</h3><span id="variable">0</span>%
+        </div>
+        <div>
+            <canvas id="myChart"></canvas>
+        </div>
+        <div id="message">در حال بر قراری ارتباط</div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        var socket = new WebSocket("ws://192.168.1.106:81/");
+        const labels = []
+        const data = []
+        let chart;
+
+        socket.onmessage = function (event) {
+
+            const ctx = document.getElementById('myChart');
+            document.getElementById("variable").innerText = event.data;
+            const hours = new Date().getHours().toString();
+            const minute = new Date().getMinutes().toString();
+            const second = new Date().getSeconds().toString();
+            labels.push(`${hours}:${minute}:${second}`)
+            data.push(parseInt(event.data))
+            if (chart) {
+                chart.destroy();
+            }
+            chart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels,
+                    datasets: [{
+                        label: '# of Votes',
+                        data,
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 100
+                        }
+                    }
+                }
+            });
+        };
+
+        socket.onopen = function () {
+            console.log("Connected to WebSocket");
+            document.getElementById('message').innerText = 'ارتباط ایجاد شد';
+        };
+
+        socket.onclose = function () {
+            console.log("WebSocket connection closed");
+            document.getElementById('message').innerText = 'ارتباط ایجاد نشد دوباره تلاش کنید';
+        };
+    </script>
+
+</body>
+
+</html>
