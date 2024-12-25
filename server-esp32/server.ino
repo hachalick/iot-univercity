@@ -17,8 +17,8 @@ int       counter_waiting     = 0;
 bool      send_data           = false;
 const int max_counter_waiting = 5;
 
-const char* ssid     = "";
-const char* password = "";
+const char* ssid     = "TP-Link_7638";
+const char* password = "38949371";
 
 WebSocketsServer webSocket = WebSocketsServer(81);
 
